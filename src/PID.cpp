@@ -12,14 +12,23 @@ void PID::Init(double Kp_, double Ki_, double Kd_) {
   /**
    * TODO: Initialize PID coefficients (and errors, if needed)
    */
+  Kp = Kp_;
+  Ki = Ki_;
+  Kd = Kd_;
 
+  i_error = 0.;
+  prev_p_error = 0.;
 }
 
 void PID::UpdateError(double cte) {
   /**
    * TODO: Update PID errors based on cte.
    */
+  p_error = cte;
+  d_error = (i_error == 0.) ? 0. : cte - prev_p_error;
+  i_error += cte;
 
+  prev_p_error = cte;
 }
 
 double PID::TotalError() {
