@@ -16,19 +16,18 @@ void PID::Init(double Kp_, double Ki_, double Kd_) {
   Ki = Ki_;
   Kd = Kd_;
 
+  p_error = 0.;
   i_error = 0.;
-  prev_p_error = 0.;
+  d_error = 0.;
 }
 
 void PID::UpdateError(double cte) {
   /**
    * TODO: Update PID errors based on cte.
    */
+  d_error = cte - p_error;
   p_error = cte;
-  d_error = (i_error == 0.) ? 0. : cte - prev_p_error;
   i_error += cte;
-
-  prev_p_error = cte;
 }
 
 double PID::TotalError() {
