@@ -35,5 +35,5 @@ double PID::TotalError() {
   /**
    * TODO: Calculate and return the total error
    */
-  return 0.0;  // TODO: Add your total error calc here!
+  return -p_error * Kp - d_error * Kd - i_error * Ki;
 }
