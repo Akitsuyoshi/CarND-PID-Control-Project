@@ -60,7 +60,7 @@ void twiddle(PID &pid, double cte) {
       best_err = current_err;
       dp[idx] *= 1.1;
     } else {
-      // Above attempts don't improve err
+      // Above all attempts don't improve err
       p[idx] += dp[idx];
       dp[idx] *= 0.95;  // NOTE: 0.95 has better results than 0.9
     }
