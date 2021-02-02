@@ -6,6 +6,7 @@
 
 #include "PID.h"
 #include "json.hpp"
+#include "twiddle.h"
 
 // for convenience
 using nlohmann::json;
@@ -39,7 +40,7 @@ int main(int argc, char *argv[]) {
    * TODO: Initialize the pid variable.
    */
   // pid.Init(atof(argv[1]), atof(argv[2]), atof(argv[3]));
-  pid.Init(0., 0., 0.);
+  pid.Init(0441522, 0.00400102, 2.00919);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                      uWS::OpCode opCode) {
@@ -68,6 +69,10 @@ int main(int argc, char *argv[]) {
            */
           // Update pid error
           pid.UpdateError(cte);
+          if (false) {
+            // twiddle is used only for local optimization
+            twiddle(pid, cte);
+          }
           steer_value = pid.TotalError();
 
           // DEBUG
