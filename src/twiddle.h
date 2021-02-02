@@ -8,7 +8,7 @@
 using std::cout;
 using std::endl;
 
-std::vector<double> p = {0.01, 0.001, 0.5};  // Initial pid coefficients
+std::vector<double> p = {0.04, 0.001, 0.4};  // Initial pid coefficients
 std::vector<double> dp = {(p[0] / 10), (p[1] / 10), (p[2] / 10)};
 
 int twiddle_itr = 0;
@@ -44,7 +44,7 @@ void twiddle(PID &pid, double cte) {
     if (current_err < best_err) {
       // First attempt reduces cte.
       best_err = current_err;
-      dp[idx] *= 1.1;
+      dp[idx] *= 1.01;
       // Go to the next element of p, and back to twiddle_state 0
       twiddle_idx += 1;
       twiddle_state = 0;
@@ -58,11 +58,11 @@ void twiddle(PID &pid, double cte) {
     if (current_err < best_err) {
       // Third attempt reduces cte.
       best_err = current_err;
-      dp[idx] *= 1.1;
+      dp[idx] *= 1.01;
     } else {
-      // Above all attempts don't improve err
+      // Above attempts don't improve err
       p[idx] += dp[idx];
-      dp[idx] *= 0.95;  // NOTE: 0.95 has better results than 0.9
+      dp[idx] *= 0.99;
     }
 
     // Go to the next element of p, and back to twiddle_state 0
