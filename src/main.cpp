@@ -31,13 +31,14 @@ string hasData(string s) {
   return "";
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   uWS::Hub h;
 
   PID pid;
   /**
    * TODO: Initialize the pid variable.
    */
+  // pid.Init(atof(argv[1]), atof(argv[2]), atof(argv[3]));
   pid.Init(0., 0., 0.);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
@@ -67,6 +68,7 @@ int main() {
            */
           // Update pid error
           pid.UpdateError(cte);
+          steer_value = pid.TotalError();
 
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value

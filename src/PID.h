@@ -19,6 +19,8 @@ class PID {
    */
   void Init(double Kp_, double Ki_, double Kd_);
 
+  void UpdateCoefficient(double Kp_, double Ki_, double Kd_);
+
   /**
    * Update the PID error variables given cross track error.
    * @param cte The current cross track error

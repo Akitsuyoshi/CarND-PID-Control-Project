@@ -21,6 +21,12 @@ void PID::Init(double Kp_, double Ki_, double Kd_) {
   d_error = 0.;
 }
 
+void PID::UpdateCoefficient(double Kp_, double Ki_, double Kd_) {
+  Kp = Kp_;
+  Ki = Ki_;
+  Kd = Kd_;
+}
+
 void PID::UpdateError(double cte) {
   /**
    * TODO: Update PID errors based on cte.
