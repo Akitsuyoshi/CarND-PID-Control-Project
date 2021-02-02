@@ -44,6 +44,16 @@ This repo includes the following files.
 [//]: # (Image References)
 
 [image0]: ./examples/run1.gif "Expected output"
+[output1]: ./p_output.gif "p"
+[output2]: ./pd_output.gif "pd"
+[output3]: ./init_output.gif "pdi"
+[output4]: ./tuned_output.gif "tuned pid"
+
+--
+
+The output looks like this:
+
+![alt text][output4]
 
 ---
 
@@ -62,7 +72,7 @@ This project requires:
 
 ## Strategy to tune PID hyperparams
 
-First of all, PID is used to correct input factor, and then caluculate appropriate output. In this project, control error(`cte`) is input while steer angle(`steer_angle`) is output.
+First of all, PID is used to correct input factor, and then caluculate appropriate output. In this project, cross track error(`cte`) is input while steer angle(`steer_angle`) is output.
 
 The formula for that is following:
 
@@ -70,9 +80,9 @@ The formula for that is following:
 steer_angle = -p_coeff * cte - i_coeff * sum_of_cte - d_coeff * (cte - prev_cte)
 ```
 
-Each component errors are calculated by `PID::UpdateError` method in [PID.cpp](./src/PID.cpp).
+Each component errors(`cte`, `sum_of_cte`, and `(cte - prev_cte)`) are calculated by `PID::UpdateError` method in [PID.cpp](./src/PID.cpp).
 
-So I need to decide each coefficient value to get correct steer angle.
+So I need to decide each coefficient value to get proper steer angles.
 
 I used 2 approches to get the coefficient values.
 
@@ -89,16 +99,34 @@ Before tuning hyperparams of PID, I set it all to 0. And then I change each para
 I set init value to something like this. Described in a order, P, I, and D coefficient.
 
 ```c++
-0.01, 0.001, 0.5
+0.02, 0.001, 0.4
 ```
 
 The videos below shows how each componets affect vehicles behaviour.
 
 #### P(Proportional) tuning
 
+If propotional coefficients has value `0.02`, vehicle behaves as follows: 
+
+![alt text][output1]
+
+It seems that the car try to steer proportional to its distance from lane center. 
+
 #### D(Derivative) tuning
 
+If propotional coefficients has value `0.4` at the same time p has `0.02`, vehicle behaves as follows:
+
+![alt text][output2]
+
+It helps to reduce overshoot caused by steering.
+
 #### I(Integral) tuning
+
+On top of above tuning, I set `0.001` as integral coefficients. The results are following:
+
+![alt text][output3]
+
+Seems like Integral componets works to prevent PD componets from reaching center of lane.
 
 ### 3. Tune by twiddle alogorythm
 
@@ -119,14 +147,14 @@ Inside twiddle algorythm, initial PID coefficients from previous step are used t
 ```c++
 // twiddle.h
 
-std::vector<double> p = {0.01, 0.001, 0.5};  // Initial pid coefficients
+std::vector<double> p = {0.02, 0.001, 0.4};  // Initial pid coefficients
 ```
 
 The alogorythm tries to update each coefficients value, and decides which update contribute to reduce error. After some updates, I got the minimum error by these coefficients values below. The order is P, I, and D value.
 
 ```c++
 
-0.0441522, 0.00400102, 2.00919
+0.0541706, 0.00270853, 1.13472
 ```
 
 I used above values as initial ones at [main.cpp](/.src/main.cpp).
@@ -134,6 +162,8 @@ I used above values as initial ones at [main.cpp](/.src/main.cpp).
 ---
 
 ## Output
+
+The video of tuned pid controlled vehicle can be found at [tuned_output.mov](./tuned_output.mov).
 
 ---
 
